@@ -9,7 +9,7 @@ const CONFIG = {
     // Demo mode - dynamically determined by localStorage
     get DEMO_MODE() {
         const savedMode = localStorage.getItem('appMode');
-        return savedMode === 'live' ? false : true; // Default to demo mode if not set
+        return savedMode === 'demo' ? true : false; // Default to live mode if not set
     },
     
     // App settings
@@ -32,6 +32,13 @@ const CONFIG = {
 
     isLiveMode() {
         return !this.DEMO_MODE;
+    },
+
+    // Initialize default mode if not set
+    initializeMode() {
+        if (!localStorage.getItem('appMode')) {
+            localStorage.setItem('appMode', 'live');
+        }
     }
 };
 

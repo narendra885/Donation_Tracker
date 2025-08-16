@@ -21,6 +21,9 @@ class DashboardManager {
             pendingCommitments: 0
         };
 
+        // Initialize mode to live if not set
+        CONFIG.initializeMode();
+        
         this.initializeDashboard();
         this.updateModeIndicator();
         this.loadDonations();

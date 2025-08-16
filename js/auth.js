@@ -309,6 +309,9 @@ class AuthManager {
 
 // Initialize authentication when page loads
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize mode to live if not set
+    CONFIG.initializeMode();
+    
     // Initialize mode indicator on login page
     const modeIndicatorLogin = document.getElementById('modeIndicatorLogin');
     if (modeIndicatorLogin) {
