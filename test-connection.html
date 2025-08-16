@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { border-color: #4CAF50; background-color: #f9fff9; }
+        .error { border-color: #f44336; background-color: #fff9f9; }
+        .warning { border-color: #ff9800; background-color: #fffaf0; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-success { background-color: #28a745; color: white; }
+        .btn-warning { background-color: #ffc107; color: black; }
+        #results { margin-top: 20px; }
+        .log { background-color: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 4px; font-family: monospace; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>Google Sheets Connection Test</h1>
+    
+    <div class="test-section">
+        <h3>Current Configuration</h3>
+        <p><strong>Google Apps Script URL:</strong> <span id="configUrl">Loading...</span></p>
+        <p><strong>Demo Mode:</strong> <span id="demoMode">Loading...</span></p>
+        <p><strong>Google Sheets ID:</strong> <span id="sheetsId">1-mYbsZ3CdevtXT1A3_mndUpUZoJ50h8riwDuRlaWcMA</span></p>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Authentication</h3>
+        <input type="text" id="testMobile" placeholder="Enter mobile number (e.g., 8392680202)" value="8392680202" style="padding: 8px; margin-right: 10px;">
+        <button class="btn-primary" onclick="testAuth()">Test Authentication</button>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Data Operations</h3>
+        <button class="btn-primary" onclick="testGetDonations()">Test Get Donations</button>
+        <button class="btn-warning" onclick="testAddDonation()">Test Add Donation</button>
+        <button class="btn-success" onclick="testGetAuthorizedNumbers()">Test Get Authorized Numbers</button>
+    </div>
+
+    <div class="test-section">
+        <h3>Switch Modes</h3>
+        <button class="btn-warning" onclick="toggleDemoMode()">Toggle Demo Mode</button>
+        <button class="btn-primary" onclick="setGoogleAppsScriptUrl()">Set Google Apps Script URL</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Display current configuration
+        document.getElementById('configUrl').textContent = CONFIG.APPS_SCRIPT_URL;
+        document.getElementById('demoMode').textContent = CONFIG.DEMO_MODE ? 'Yes' : 'No';
+
+        function log(message, type = 'info') {
+            const results = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            const logDiv = document.createElement('div');
+            logDiv.className = `log ${type}`;
+            logDiv.textContent = `[${timestamp}] ${message}`;
+            results.appendChild(logDiv);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        async function testAuth() {
+            const mobile = document.getElementById('testMobile').value.trim();
+            if (!mobile) {
+                log('Please enter a mobile number', 'error');
+                return;
+            }
+
+            log(`Testing authentication for mobile: ${mobile}`, 'info');
+
+            if (CONFIG.DEMO_MODE) {
+                log('Demo mode is enabled - testing local authentication', 'warning');
+                // Simulate demo authentication
+                const demoUsers = [
+                    { mobile: '8392680202', role: 'admin' },
+                    { mobile: '9876543210', role: 'read_edit' },
+                    { mobile: '1234567890', role: 'read_only' }
+                ];
+                const user = demoUsers.find(u => u.mobile === mobile);
+                if (user) {
+                    log(`✅ Authentication successful! Role: ${user.role}`, 'success');
+                } else {
+                    log(`❌ Authentication failed: Mobile not authorized`, 'error');
+                }
+                return;
+            }
+
+            try {
+                log('Sending request to Google Apps Script...', 'info');
+                const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'authenticate',
+                        mobile: mobile
+                    })
+                });
+
+                log(`Response status: ${response.status}`, 'info');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                log(`Response data: ${JSON.stringify(data, null, 2)}`, 'info');
+
+                if (data.success) {
+                    log(`✅ Authentication successful! Role: ${data.role}`, 'success');
+                } else {
+                    log(`❌ Authentication failed: ${data.message || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Connection error: ${error.message}`, 'error');
+                log('This could mean the Google Apps Script URL is not configured or the script is not deployed', 'warning');
+            }
+        }
+
+        async function testGetDonations() {
+            log('Testing get donations...', 'info');
+
+            if (CONFIG.DEMO_MODE) {
+                log('Demo mode is enabled - would return demo data', 'warning');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${CONFIG.APPS_SCRIPT_URL}?action=getDonations&year=2025`);
+                log(`Response status: ${response.status}`, 'info');
+
+                const data = await response.json();
+                log(`Response data: ${JSON.stringify(data, null, 2)}`, 'info');
+
+                if (data.success) {
+                    log(`✅ Got ${data.donations ? data.donations.length : 0} donations`, 'success');
+                } else {
+                    log(`❌ Failed to get donations: ${data.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Connection error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAddDonation() {
+            log('Testing add donation...', 'info');
+
+            if (CONFIG.DEMO_MODE) {
+                log('Demo mode is enabled - would add to local storage', 'warning');
+                return;
+            }
+
+            const testDonation = {
+                donorName: 'Test Donor',
+                donorPhone: '9999999999',
+                amountGiven: 100,
+                amountCommitted: 200,
+                date: new Date().toISOString().split('T')[0],
+                notes: 'Test donation from connection test',
+                addedBy: '8392680202'
+            };
+
+            try {
+                const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'addDonation',
+                        donation: testDonation
+                    })
+                });
+
+                log(`Response status: ${response.status}`, 'info');
+
+                const data = await response.json();
+                log(`Response data: ${JSON.stringify(data, null, 2)}`, 'info');
+
+                if (data.success) {
+                    log(`✅ Donation added successfully!`, 'success');
+                } else {
+                    log(`❌ Failed to add donation: ${data.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Connection error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testGetAuthorizedNumbers() {
+            log('Testing get authorized numbers...', 'info');
+
+            if (CONFIG.DEMO_MODE) {
+                log('Demo mode is enabled - would return demo users', 'warning');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${CONFIG.APPS_SCRIPT_URL}?action=getAuthorizedNumbers`);
+                log(`Response status: ${response.status}`, 'info');
+
+                const data = await response.json();
+                log(`Response data: ${JSON.stringify(data, null, 2)}`, 'info');
+
+                if (data.success) {
+                    log(`✅ Got ${data.users ? data.users.length : 0} authorized users`, 'success');
+                } else {
+                    log(`❌ Failed to get authorized numbers: ${data.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Connection error: ${error.message}`, 'error');
+            }
+        }
+
+        function toggleDemoMode() {
+            CONFIG.DEMO_MODE = !CONFIG.DEMO_MODE;
+            document.getElementById('demoMode').textContent = CONFIG.DEMO_MODE ? 'Yes' : 'No';
+            log(`Demo mode ${CONFIG.DEMO_MODE ? 'enabled' : 'disabled'}`, 'info');
+        }
+
+        function setGoogleAppsScriptUrl() {
+            const url = prompt('Enter your Google Apps Script Web App URL:', CONFIG.APPS_SCRIPT_URL);
+            if (url && url.trim()) {
+                CONFIG.APPS_SCRIPT_URL = url.trim();
+                document.getElementById('configUrl').textContent = CONFIG.APPS_SCRIPT_URL;
+                log(`Google Apps Script URL updated to: ${CONFIG.APPS_SCRIPT_URL}`, 'success');
+            }
+        }
+
+        // Initial log
+        log('Connection test page loaded', 'info');
+        log(`Current configuration: Demo Mode = ${CONFIG.DEMO_MODE}, URL = ${CONFIG.APPS_SCRIPT_URL}`, 'info');
+    </script>
+</body>
+</html>

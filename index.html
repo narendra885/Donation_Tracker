@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Tracker - Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-card">
+            <h1>🤝 Donation Tracker</h1>
+            <p>Enter your mobile number to access the dashboard</p>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="mobileNumber">Mobile Number</label>
+                    <input type="tel" id="mobileNumber" placeholder="Enter 10 digit mobile number" required>
+                </div>
+                
+                <button type="submit" id="loginBtn">
+                    <span class="btn-text">Access Dashboard</span>
+                    <span class="loader" style="display: none;"></span>
+                </button>
+            </form>
+            
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            
+            <div class="footer">
+                <p>Contact admin to get access</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

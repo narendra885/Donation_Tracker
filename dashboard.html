@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>🤝 Donation Dashboard</h1>
+            <div class="header-controls">
+                <div class="year-filter">
+                    <label for="yearSelect">Year:</label>
+                    <select id="yearSelect" class="year-dropdown">
+                        <!-- Years will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="header-actions">
+                    <button id="exportCsvBtn" class="btn-secondary">📊 Export CSV</button>
+                    <button id="refreshBtn" class="btn-secondary">🔄 Refresh</button>
+                    <button id="logoutBtn" class="btn-secondary">🚪 Logout</button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Donations</h3>
+                <div class="stat-value" id="totalDonations">$0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Commitments</h3>
+                <div class="stat-value" id="totalCommitments">$0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Active Donors</h3>
+                <div class="stat-value" id="activeDonors">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Pending Commitments</h3>
+                <div class="stat-value" id="pendingCommitments">$0</div>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <div class="section">
+                <div class="section-header">
+                    <h2>Add New Donation</h2>
+                    <button id="toggleAddForm" class="btn-primary">+ Add Donation</button>
+                </div>
+                
+                <div id="addDonationForm" class="form-container" style="display: none;">
+                    <form id="donationForm">
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="donorName">Donor Name</label>
+                                <input type="text" id="donorName" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="donorPhone">Donor Phone</label>
+                                <input type="tel" id="donorPhone">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="amountGiven">Amount Given ($)</label>
+                                <input type="number" id="amountGiven" min="0" step="0.01">
+                            </div>
+                            <div class="input-group">
+                                <label for="amountCommitted">Amount Committed ($)</label>
+                                <input type="number" id="amountCommitted" min="0" step="0.01">
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="notes">Notes</label>
+                            <textarea id="notes" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Save Donation</button>
+                            <button type="button" id="cancelAdd" class="btn-secondary">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Recent Donations</h2>
+                <div class="table-container">
+                    <div id="loadingSpinner" class="loading">Loading donations...</div>
+                    <table id="donationsTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Donor Name</th>
+                                <th>Phone</th>
+                                <th>Amount Given</th>
+                                <th>Amount Committed</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="donationsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- CSV Export Modal -->
+        <div id="csvExportModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>📊 Export Donation Data</h3>
+                    <span class="close" onclick="document.getElementById('csvExportModal').style.display='none'">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p>Export all donation records to CSV format?</p>
+                    <div class="export-options">
+                        <div class="option-group">
+                            <input type="radio" id="currentYear" name="exportType" value="current" checked>
+                            <label for="currentYear">Current Year Only (<span id="currentYearText">2025</span>)</label>
+                        </div>
+                        <div class="option-group">
+                            <input type="radio" id="allData" name="exportType" value="all">
+                            <label for="allData">All Years (Complete Database)</label>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button onclick="dashboard.confirmExport()" class="btn-primary">📊 Export CSV</button>
+                        <button onclick="document.getElementById('csvExportModal').style.display='none'" class="btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

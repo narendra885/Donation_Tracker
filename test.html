@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Tracker - Test Instructions</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .instructions-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .test-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .credential-box {
+            background: #e6fffa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 16px;
+            border: 1px solid #4fd1c7;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.demo { background: #fed7d7; color: #c53030; }
+        .status.admin { background: #c6f6d5; color: #2f855a; }
+    </style>
+</head>
+<body>
+    <div class="instructions-container">
+        <h1>🧪 Test Instructions - Donation Tracker</h1>
+        <p><span class="status demo">DEMO MODE</span> - No Google Sheets connection required</p>
+        
+        <div class="test-card">
+            <h3>🔐 Admin Login Credentials</h3>
+            <p>Only pre-authorized mobile numbers can login. Contact admin for access.</p>
+            <div class="credential-box">
+                <strong>Demo Numbers Available (for testing):</strong><br>
+                📱 8392680202 <span class="status admin">MAIN ADMIN</span><br>
+                📱 1987654321 (Read/Edit Access)<br>
+                📱 1555123456 (Read Only Access)<br>
+                📱 1555987654 (Read/Edit Access)<br>
+                📱 1555456789 (Read Only, Inactive)
+            </div>
+            <p><small>⚠️ Only admin users can manage other users and change roles.</small></p>
+        </div>
+
+        <div class="test-card">
+            <h3>🎯 Testing Steps</h3>
+            <ol>
+                <li><strong>Admin Login:</strong> Go to <a href="index.html">Login Page</a> and use an admin mobile number</li>
+                <li><strong>Admin Panel:</strong> Click "Admin" button to manage authorized users</li>
+                <li><strong>Add User:</strong> Add a new mobile number with role selection</li>
+                <li><strong>Change User Role:</strong> Use "Change Role" button to modify existing user permissions</li>
+                <li><strong>Test Different Roles:</strong> Login with different users and verify role-based access</li>
+                <li><strong>Test Regular User:</strong> Try logging in with a read-only user account</li>
+                <li><strong>Test Unauthorized:</strong> Try any random number (should be rejected)</li>
+            </ol>
+        </div>
+
+        <div class="test-card">
+            <h3>✨ Features to Test</h3>
+            <ul>
+                <li>✅ Login with mobile number authentication (10-digit format)</li>
+                <li>✅ Dashboard with live statistics</li>
+                <li>✅ Add/Edit/Delete donations (role-based permissions)</li>
+                <li>✅ Year-wise filtering of donation data</li>
+                <li>✅ CSV export (current year or all data)</li>
+                <li>✅ Admin panel for user management</li>
+                <li>✅ 3-tier role system (admin/read_edit/read_only)</li>
+                <li>✅ Change user roles and permissions</li>
+                <li>✅ Responsive design (mobile/desktop)</li>
+                <li>✅ Session management and logout</li>
+            </ul>
+        </div>
+
+        <div class="test-card">
+            <h3>🚀 Quick Links</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="index.html" class="btn-primary" style="text-decoration: none;">🔐 Login Page</a>
+                <a href="dashboard.html" class="btn-secondary" style="text-decoration: none;">📊 Dashboard</a>
+                <a href="admin.html" class="btn-secondary" style="text-decoration: none;">👨‍💼 Admin Panel</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <h3>🔧 Current Configuration</h3>
+            <p><strong>Mode:</strong> Demo with Secure Authentication<br>
+            <strong>Data Storage:</strong> Browser localStorage (persists until cleared)<br>
+            <strong>Authentication:</strong> Authorized numbers only<br>
+            <strong>Admin Access:</strong> Only designated admin numbers<br>
+            <strong>Security:</strong> ✅ Unauthorized numbers rejected</p>
+        </div>
+
+        <div class="test-card">
+            <h3>📋 For Production Setup</h3>
+            <p>To connect to Google Sheets for real data persistence:</p>
+            <ol>
+                <li>Follow instructions in <code>SETUP.md</code></li>
+                <li>Configure Google Apps Script</li>
+                <li>Update Web App URLs in JavaScript files</li>
+                <li>Deploy to GitHub Pages</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>

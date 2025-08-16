@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Donation Tracker</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-card">
+            <h1>🔧 Debug Console</h1>
+            <p>Debug authentication and storage</p>
+            
+            <div class="debug-section">
+                <h3>Storage Debug</h3>
+                <button onclick="clearAllStorage()">Clear All Storage</button>
+                <button onclick="showStoredData()">Show Stored Data</button>
+                <button onclick="testAuth()">Test Auth for 8392680202</button>
+                
+                <div id="debugOutput" style="margin-top: 20px; padding: 15px; background: #f7fafc; border-radius: 8px; font-family: monospace; font-size: 12px; white-space: pre-wrap;"></div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <a href="index.html" class="btn-primary">Go to Login</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/auth.js"></script>
+    <script>
+        function clearAllStorage() {
+            localStorage.clear();
+            sessionStorage.clear();
+            updateDebugOutput('All storage cleared!');
+        }
+        
+        function showStoredData() {
+            const output = {
+                localStorage: {},
+                sessionStorage: {}
+            };
+            
+            // Get localStorage data
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                output.localStorage[key] = localStorage.getItem(key);
+            }
+            
+            // Get sessionStorage data
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                output.sessionStorage[key] = sessionStorage.getItem(key);
+            }
+            
+            updateDebugOutput(JSON.stringify(output, null, 2));
+        }
+        
+        function testAuth() {
+            // Clear everything first
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Test the auth system directly
+            const testNumber = '8392680202';
+            
+            updateDebugOutput(`=== FRESH TEST ===\n`);
+            updateDebugOutput(`Testing authentication for: ${testNumber}\n\n`);
+            
+            // Create new auth manager
+            const authManager = new AuthManager();
+            
+            // Test checkAuthorization
+            authManager.checkAuthorization(testNumber).then(isAuthorized => {
+                updateDebugOutput(`Authorization result: ${isAuthorized}\n`);
+                
+                if (isAuthorized) {
+                    const userRole = sessionStorage.getItem('userRole');
+                    updateDebugOutput(`User role set: ${userRole}\n`);
+                    updateDebugOutput(`Is admin check: ${AuthManager.isAdmin()}\n`);
+                    updateDebugOutput(`Can edit data: ${AuthManager.canEditData()}\n`);
+                } else {
+                    updateDebugOutput(`Authorization failed!\n`);
+                }
+            }).catch(error => {
+                updateDebugOutput(`Error: ${error.message}\n`);
+            });
+        }
+        
+        function updateDebugOutput(text) {
+            const output = document.getElementById('debugOutput');
+            output.textContent += text + '\n';
+        }
+    </script>
+    
+    <style>
+        .debug-section {
+            margin: 20px 0;
+        }
+        
+        .debug-section button {
+            margin: 5px;
+            padding: 8px 12px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .debug-section button:hover {
+            background: #3182ce;
+        }
+    </style>
+</body>
+</html>

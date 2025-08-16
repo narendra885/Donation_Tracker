@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Donation Tracker</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>👨‍💼 Admin Panel</h1>
+            <div class="header-actions">
+                <button id="backToDashboard" class="btn-secondary">📊 Dashboard</button>
+                <button id="logoutBtn" class="btn-secondary">🚪 Logout</button>
+            </div>
+        </header>
+        
+        <div class="dashboard-content">
+            <div class="section">
+                <h2>Authorized Mobile Numbers</h2>
+                <div class="section-header">
+                    <button id="addNumberBtn" class="btn-primary">+ Add Number</button>
+                </div>
+                
+                <div id="addNumberForm" class="form-container" style="display: none;">
+                    <form id="numberForm">
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="newMobileNumber">Mobile Number (10 digits)</label>
+                                <input type="tel" id="newMobileNumber" placeholder="Enter 10 digit mobile number" maxlength="10" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="userName">User Name</label>
+                                <input type="text" id="userName" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="userRole">User Role</label>
+                                <select id="userRole">
+                                    <option value="read_only" selected>👁️ Read Only (View only) - Default</option>
+                                    <option value="read_edit">✏️ Read & Edit (Can modify data)</option>
+                                    <option value="admin">👨‍� Admin (Full Access)</option>
+                                </select>
+                                <small style="color: #718096; display: block; margin-top: 4px;">
+                                    Default role is Read Only. Choose the access level for this user.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Add Number</button>
+                            <button type="button" id="cancelAddNumber" class="btn-secondary">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="table-container">
+                    <table id="numbersTable">
+                        <thead>
+                            <tr>
+                                <th>Mobile Number</th>
+                                <th>User Name</th>
+                                <th>Role</th>
+                                <th>Added Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="numbersTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>System Configuration</h2>
+                <div class="config-grid">
+                    <div class="config-card">
+                        <h3>Google Sheets Settings</h3>
+                        <p>Spreadsheet ID: <code id="spreadsheetId">Not configured</code></p>
+                        <button id="configureSheets" class="btn-secondary">Configure</button>
+                    </div>
+                    <div class="config-card">
+                        <h3>Data Export</h3>
+                        <p>Export all donation data</p>
+                        <button id="exportData" class="btn-secondary">Export CSV</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
