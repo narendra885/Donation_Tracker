@@ -6,8 +6,11 @@ const CONFIG = {
     // after deploying the script as a web app
     APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwqPJUyCQrE6zL1WFZzD070IqaMMVxZJ0d_s3YOgtE4RjwnxwYIBDgtLNYmSNvmn1cG/exec',
     
-    // Demo mode - set to false when connecting to real Google Sheets
-    DEMO_MODE: false,  // Changed to false for production
+    // Demo mode - dynamically determined by localStorage
+    get DEMO_MODE() {
+        const savedMode = localStorage.getItem('appMode');
+        return savedMode === 'live' ? false : true; // Default to demo mode if not set
+    },
     
     // App settings
     APP_NAME: 'Donation Tracker',
@@ -20,7 +23,16 @@ const CONFIG = {
     MOBILE_REGEX: /^\d{10}$/,
     
     // Debug mode
-    DEBUG: true
+    DEBUG: true,
+
+    // Mode helper functions
+    getCurrentMode() {
+        return this.DEMO_MODE ? 'demo' : 'live';
+    },
+
+    isLiveMode() {
+        return !this.DEMO_MODE;
+    }
 };
 
 // Export for use in other files

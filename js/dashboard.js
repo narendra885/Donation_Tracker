@@ -22,6 +22,7 @@ class DashboardManager {
         };
 
         this.initializeDashboard();
+        this.updateModeIndicator();
         this.loadDonations();
         
         // Auto-refresh every 30 seconds
@@ -92,6 +93,20 @@ class DashboardManager {
             window.location.href = 'admin.html';
         });
         headerActions.insertBefore(adminBtn, headerActions.firstChild);
+    }
+
+    updateModeIndicator() {
+        const modeIndicator = document.getElementById('modeIndicator');
+        if (!modeIndicator) return;
+
+        const currentMode = CONFIG.getCurrentMode();
+        const isLiveMode = CONFIG.isLiveMode();
+        
+        modeIndicator.textContent = isLiveMode ? '🟢 Live Mode' : '🟡 Demo Mode';
+        modeIndicator.className = `mode-indicator ${isLiveMode ? 'live' : 'demo'}`;
+        modeIndicator.title = isLiveMode 
+            ? 'Connected to Google Sheets - Data is saved permanently' 
+            : 'Running in demo mode - Data is temporary';
     }
 
     initializeYearDropdown() {

@@ -309,6 +309,19 @@ class AuthManager {
 
 // Initialize authentication when page loads
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize mode indicator on login page
+    const modeIndicatorLogin = document.getElementById('modeIndicatorLogin');
+    if (modeIndicatorLogin) {
+        const currentMode = CONFIG.getCurrentMode();
+        const isLiveMode = CONFIG.isLiveMode();
+        
+        modeIndicatorLogin.textContent = isLiveMode ? '🟢 Live Mode' : '🟡 Demo Mode';
+        modeIndicatorLogin.className = `mode-indicator ${isLiveMode ? 'live' : 'demo'}`;
+        modeIndicatorLogin.title = isLiveMode 
+            ? 'Connected to Google Sheets - Data is saved permanently' 
+            : 'Running in demo mode - Data is temporary';
+    }
+    
     // Only run on login page
     if (document.getElementById('loginForm')) {
         // Check if already authenticated

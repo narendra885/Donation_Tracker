@@ -77,6 +77,21 @@
                 <h2>System Configuration</h2>
                 <div class="config-grid">
                     <div class="config-card">
+                        <h3>🔄 Mode Toggle</h3>
+                        <p>Current Mode: <span id="currentMode" class="mode-indicator">Loading...</span></p>
+                        <div class="mode-toggle">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="modeToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span id="modeLabel">Demo Mode</span>
+                        </div>
+                        <p style="font-size: 12px; color: #666; margin-top: 8px;">
+                            <strong>Demo Mode:</strong> Data stored locally (temporary)<br>
+                            <strong>Live Mode:</strong> Data stored in Google Sheets (permanent)
+                        </p>
+                    </div>
+                    <div class="config-card">
                         <h3>Google Sheets Settings</h3>
                         <p>Spreadsheet ID: <code id="spreadsheetId">Not configured</code></p>
                         <button id="configureSheets" class="btn-secondary">Configure</button>

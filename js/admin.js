@@ -44,6 +44,14 @@ class AdminManager {
         document.getElementById('exportData').addEventListener('click', () => {
             this.exportData();
         });
+
+        // Mode toggle functionality
+        document.getElementById('modeToggle').addEventListener('change', (e) => {
+            this.toggleMode(e.target.checked);
+        });
+
+        // Initialize mode display
+        this.updateModeDisplay();
     }
 
     async loadAuthorizedNumbers() {
@@ -580,6 +588,56 @@ class AdminManager {
         } catch (error) {
             console.error('Error exporting data:', error);
             this.showError('Failed to export data');
+        }
+    }
+
+    // Mode Toggle Methods
+    updateModeDisplay() {
+        const currentMode = localStorage.getItem('appMode') || 'demo';
+        const isLiveMode = currentMode === 'live';
+        
+        const currentModeElement = document.getElementById('currentMode');
+        const modeToggle = document.getElementById('modeToggle');
+        const modeLabel = document.getElementById('modeLabel');
+        
+        // Update current mode display
+        currentModeElement.textContent = isLiveMode ? 'Live Mode' : 'Demo Mode';
+        currentModeElement.className = `mode-indicator ${isLiveMode ? 'live' : 'demo'}`;
+        
+        // Update toggle switch
+        modeToggle.checked = isLiveMode;
+        
+        // Update label
+        modeLabel.textContent = isLiveMode ? 'Live Mode' : 'Demo Mode';
+    }
+
+    toggleMode(isLiveMode) {
+        const newMode = isLiveMode ? 'live' : 'demo';
+        
+        // Show confirmation dialog
+        const message = isLiveMode 
+            ? 'Switch to Live Mode? Data will be stored in Google Sheets permanently.' 
+            : 'Switch to Demo Mode? Data will be stored locally (temporary).';
+            
+        if (confirm(message)) {
+            // Save the mode preference
+            localStorage.setItem('appMode', newMode);
+            
+            // Update display
+            this.updateModeDisplay();
+            
+            // Show success message
+            this.showSuccessMessage(`Switched to ${isLiveMode ? 'Live' : 'Demo'} Mode successfully!`);
+            
+            // Optionally reload the page to apply changes
+            setTimeout(() => {
+                if (confirm('Reload the page to apply the mode change?')) {
+                    window.location.reload();
+                }
+            }, 1500);
+        } else {
+            // Reset toggle if cancelled
+            this.updateModeDisplay();
         }
     }
 
