@@ -126,6 +126,19 @@ function doPost(e) {
   }
 }
 
+// Handle OPTIONS requests for CORS preflight
+function doOptions(e) {
+  return ContentService
+    .createTextOutput('')
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeaders({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400'
+    });
+}
+
 // Authentication functions
 function handleCheckAuth(mobile) {
   if (!mobile) {
@@ -463,7 +476,12 @@ function createResponse(success, message, data = null) {
   
   return ContentService
     .createTextOutput(JSON.stringify(response))
-    .setMimeType(ContentService.MimeType.JSON);
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeaders({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    });
 }
 
 // Setup functions
