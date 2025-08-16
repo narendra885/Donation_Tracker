@@ -4,7 +4,7 @@ const CONFIG = {
     // Google Apps Script Web App URL
     // IMPORTANT: Replace this with your actual Google Apps Script Web App URL
     // after deploying the script as a web app
-    APPS_SCRIPT_URL: 'cd c:\Users\v\Desktop\selfweb\selfweb',
+    APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwqPJUyCQrE6zL1WFZzD070IqaMMVxZJ0d_s3YOgtE4RjwnxwYIBDgtLNYmSNvmn1cG/exec',
     
     // Demo mode - set to false when connecting to real Google Sheets
     DEMO_MODE: false,  // Changed to false for production
