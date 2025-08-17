@@ -37,7 +37,7 @@ const CONFIG = {
     // Initialize default mode if not set
     initializeMode() {
         if (!localStorage.getItem('appMode')) {
-            localStorage.setItem('appMode', 'live');
+            localStorage.setItem('appMode', 'demo');
         }
     }
 };
