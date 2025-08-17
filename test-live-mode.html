@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Mode Test - Donation Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:first-child {
+            background: #ff9800;
+            font-weight: bold;
+        }
+        button:first-child:hover {
+            background: #f57c00;
+        }
+        button:nth-child(2) {
+            background: #2196F3;
+            font-weight: bold;
+        }
+        button:nth-child(2):hover {
+            background: #1976D2;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Live Mode Connection Test</h1>
+    
+    <div class="test-container">
+        <h2>📊 Current Configuration</h2>
+        <div id="configInfo" class="result info">Loading...</div>
+    </div>
+
+    <div class="test-container">
+        <h2>🔗 Google Apps Script Connection Tests</h2>
+        <button onclick="runSetup()">🚀 1. RUN SETUP FIRST</button>
+        <button onclick="setupDemoData()">📊 2. ADD DEMO DATA</button>
+        <button onclick="testBasicConnection()">3. Test Basic Connection</button>
+        <button onclick="testAuthEndpoint()">4. Test Auth Endpoint</button>
+        <button onclick="testFullAuth()">5. Test Full Authentication</button>
+        <button onclick="testGetDonations()">6. Test Get Donations</button>
+        <div id="testResults" class="result">Step 1: Click "RUN SETUP FIRST" to initialize Google Sheets...</div>
+    </div>
+
+    <div class="test-container">
+        <h2>🎯 Live Mode Demo</h2>
+        <button onclick="setLiveMode()">Enable Live Mode</button>
+        <button onclick="setDemoMode()">Enable Demo Mode</button>
+        <button onclick="checkCurrentMode()">Check Current Mode</button>
+        <div id="modeResults" class="result">Click buttons to test mode switching...</div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Display current configuration
+        document.getElementById('configInfo').innerHTML = `
+Current Mode: ${CONFIG.getCurrentMode().toUpperCase()}
+Is Live Mode: ${CONFIG.isLiveMode()}
+Demo Mode: ${CONFIG.DEMO_MODE}
+Apps Script URL: ${CONFIG.APPS_SCRIPT_URL}
+LocalStorage appMode: ${localStorage.getItem('appMode') || 'not set'}
+        `;
+
+        // Test functions
+        async function runSetup() {
+            const resultDiv = document.getElementById('testResults');
+            resultDiv.innerHTML = '🚀 Running Google Sheets setup...';
+            
+            try {
+                const url = `${CONFIG.APPS_SCRIPT_URL}?action=setup`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ SETUP COMPLETED SUCCESSFULLY!
+${data.message}
+
+Now you can run the other tests. The following sheets have been created:
+- AuthorizedUsers (with admin user: 8392680202)
+- Donations_2025 (for current year donations)`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Setup failed: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Setup FAILED!
+Error: ${error.message}`;
+            }
+        }
+
+        async function setupDemoData() {
+            const resultDiv = document.getElementById('testResults');
+            resultDiv.innerHTML = '📊 Adding demo data to Google Sheets...';
+            
+            try {
+                const url = `${CONFIG.APPS_SCRIPT_URL}?action=setupDemo`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ DEMO DATA ADDED SUCCESSFULLY!
+${data.message}
+
+Demo data includes:
+👥 Users: Main Admin (8392680202), Editor User (9876543210), Reader User (1234567890), Test Admin (5555555555), Test Editor (6666666666)
+💰 Sample donations: 5 donation records with various amounts and dates
+
+Now you can test authentication with any of these numbers!`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Demo data setup failed: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Demo data setup FAILED!
+Error: ${error.message}`;
+            }
+        }
+
+        async function testBasicConnection() {
+            const resultDiv = document.getElementById('testResults');
+            resultDiv.innerHTML = 'Testing basic connection...';
+            
+            try {
+                const response = await fetch(CONFIG.APPS_SCRIPT_URL);
+                const data = await response.json();
+                
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `✅ Basic Connection SUCCESS!
+Response: ${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Basic Connection FAILED!
+Error: ${error.message}`;
+            }
+        }
+
+        async function testAuthEndpoint() {
+            const resultDiv = document.getElementById('testResults');
+            resultDiv.innerHTML = 'Testing auth endpoint...';
+            
+            try {
+                const url = `${CONFIG.APPS_SCRIPT_URL}?action=checkAuth&mobile=8392680202`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `✅ Auth Endpoint SUCCESS!
+Response: ${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Auth Endpoint FAILED!
+Error: ${error.message}`;
+            }
+        }
+
+        async function testFullAuth() {
+            const resultDiv = document.getElementById('testResults');
+            resultDiv.innerHTML = 'Testing full authentication...';
+            
+            try {
+                const formData = new FormData();
+                formData.append('action', 'checkAuth');
+                formData.append('mobile', '8392680202');
+                
+                const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `✅ Full Auth SUCCESS!
+Response: ${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Full Auth FAILED!
+Error: ${error.message}`;
+            }
+        }
+
+        async function testGetDonations() {
+            const resultDiv = document.getElementById('testResults');
+            resultDiv.innerHTML = 'Testing get donations...';
+            
+            try {
+                const url = `${CONFIG.APPS_SCRIPT_URL}?action=getDonations&year=2025`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `✅ Get Donations SUCCESS!
+Response: ${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Get Donations FAILED!
+Error: ${error.message}`;
+            }
+        }
+
+        // Mode testing functions
+        function setLiveMode() {
+            localStorage.setItem('appMode', 'live');
+            updateModeDisplay();
+        }
+
+        function setDemoMode() {
+            localStorage.setItem('appMode', 'demo');
+            updateModeDisplay();
+        }
+
+        function checkCurrentMode() {
+            updateModeDisplay();
+        }
+
+        function updateModeDisplay() {
+            const resultDiv = document.getElementById('modeResults');
+            const configDiv = document.getElementById('configInfo');
+            
+            // Update config display
+            configDiv.innerHTML = `
+Current Mode: ${CONFIG.getCurrentMode().toUpperCase()}
+Is Live Mode: ${CONFIG.isLiveMode()}
+Demo Mode: ${CONFIG.DEMO_MODE}
+Apps Script URL: ${CONFIG.APPS_SCRIPT_URL}
+LocalStorage appMode: ${localStorage.getItem('appMode') || 'not set'}
+            `;
+            
+            // Update mode results
+            resultDiv.className = `result ${CONFIG.isLiveMode() ? 'success' : 'info'}`;
+            resultDiv.innerHTML = `Current Mode: ${CONFIG.getCurrentMode().toUpperCase()}
+${CONFIG.isLiveMode() ? '🟢 Live Mode - Connected to Google Sheets' : '🟡 Demo Mode - Local storage only'}`;
+        }
+
+        // Auto-check mode on load
+        window.addEventListener('load', updateModeDisplay);
+    </script>
+</body>
+</html>
