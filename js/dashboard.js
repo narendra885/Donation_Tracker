@@ -422,13 +422,12 @@ class DashboardManager {
         try {
             const response = await fetch(this.CONFIG.WEB_APP_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'addDonation',
-                    donation: donation
-                })
+                body: (() => {
+                    const form = new FormData();
+                    form.append('action', 'addDonation');
+                    form.append('donation', JSON.stringify(donation));
+                    return form;
+                })()
             });
 
             const result = await response.json();

@@ -276,13 +276,12 @@ class AdminManager {
 
             const response = await fetch(this.CONFIG.WEB_APP_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'addAuthorizedNumber',
-                    number: newNumber
-                })
+                body: (() => {
+                    const form = new FormData();
+                    form.append('action', 'addAuthorizedNumber');
+                    form.append('number', JSON.stringify(newNumber));
+                    return form;
+                })()
             });
 
             const result = await response.json();

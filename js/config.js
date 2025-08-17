@@ -43,6 +43,17 @@ const CONFIG = {
 };
 
 // Export for use in other files
+
+// Demo users for demo mode
+CONFIG.DEMO_USERS = [
+    { mobile: '8392680202', userName: 'Main Admin', role: 'admin' },
+    { mobile: '9876543210', userName: 'Editor User', role: 'read_edit' },
+    { mobile: '1234567890', userName: 'Reader User', role: 'read_only' },
+    { mobile: '5555555555', userName: 'Test Admin', role: 'admin' },
+    { mobile: '6666666666', userName: 'Test Editor', role: 'read_edit' },
+    { mobile: '0123456789', userName: 'Main Admin', role: 'admin' }
+];
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = CONFIG;
 }

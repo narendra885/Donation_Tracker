@@ -70,15 +70,14 @@ class AuthManager {
 
         // Real Google Apps Script mode
         try {
+            // Use FormData for CORS-safe POST
+            const form = new FormData();
+            form.append('action', 'authenticate');
+            form.append('mobile', mobileNumber);
+
             const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'authenticate',
-                    mobile: mobileNumber
-                })
+                body: form
             });
 
             if (!response.ok) {
@@ -86,7 +85,7 @@ class AuthManager {
             }
 
             const data = await response.json();
-            
+
             if (CONFIG.DEBUG) {
                 console.log('Server response:', data);
             }
@@ -107,17 +106,9 @@ class AuthManager {
 
     checkDemoAuthorization(mobileNumber) {
         if (CONFIG.DEBUG) {
-            console.log('Demo mode: Checking against authorized numbers list');
+            console.log('Demo mode: Checking against CONFIG.DEMO_USERS');
         }
-        
-        // Demo authorized numbers
-        const demoUsers = {
-            '8392680202': { role: 'admin', userName: 'Main Admin' },
-            '9876543210': { role: 'read_edit', userName: 'Editor User' },
-            '1234567890': { role: 'read_only', userName: 'Reader User' }
-        };
-
-        const user = demoUsers[mobileNumber];
+        const user = CONFIG.DEMO_USERS.find(u => u.mobile === mobileNumber);
         if (user) {
             if (CONFIG.DEBUG) {
                 console.log('Demo authorization successful:', user);
@@ -332,6 +323,15 @@ document.addEventListener('DOMContentLoaded', () => {
             new AuthManager();
         }
     }
+        // Mode switch button handler
+        var modeSwitchBtn = document.getElementById('modeSwitchBtn');
+        if (modeSwitchBtn) {
+            modeSwitchBtn.onclick = function() {
+                const current = localStorage.getItem('appMode') === 'demo' ? 'live' : 'demo';
+                localStorage.setItem('appMode', current);
+                location.reload();
+            };
+        }
 });
 
 // Export for use in other modules
