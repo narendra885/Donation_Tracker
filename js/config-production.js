@@ -7,8 +7,8 @@ const CONFIG = {
     APPS_SCRIPT_URL: 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE',
     
     // Demo mode - set to false when connecting to real Google Sheets
-    DEMO_MODE: false,  // Changed to false for production
-    
+    DEMO_MODE: true,  // Changed to true for production
+
     // App settings
     APP_NAME: 'Donation Tracker',
     VERSION: '1.0.0',
